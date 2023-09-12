@@ -41,7 +41,7 @@ func (s *Service) InspectData(data, token, clientIp, serverIp string) (*Response
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Forwarded-For", serverIp)
-	req.Header.Set("X-API-KEY", token)
+	req.Header.Set("X-Api-Key", token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
