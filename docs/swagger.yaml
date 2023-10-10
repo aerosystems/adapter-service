@@ -1,0 +1,65 @@
+basePath: /
+definitions:
+  proxy.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  proxy.ResponseCheckData:
+    properties:
+      error:
+        type: integer
+      message:
+        type: string
+      result:
+        type: boolean
+      unknown:
+        type: boolean
+    type: object
+host: api.verifire.com
+info:
+  contact:
+    name: Artem Kostenko
+    url: https://github.com/aerosystems
+  description: A part of microservice infrastructure, who responsible for proxy requests
+    to checkmail-service
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  title: Adapter Service API
+  version: 1.0.0
+paths:
+  /domain/check:
+    get:
+      consumes:
+      - application/json
+      description: Get Data about domain/email address
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/proxy.ResponseCheckData'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Data about domain/email address
+      tags:
+      - data
+schemes:
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Should contain Access JWT Token, with the Bearer started
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
