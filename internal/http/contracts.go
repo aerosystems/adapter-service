@@ -1,6 +1,6 @@
 package HttpServer
 
-import OAuthService "github.com/aerosystems/auth-service/pkg/oauth"
+import OAuthService "github.com/aerosystems/adapter-service/pkg/oauth"
 
 type TokenService interface {
 	GetAccessSecret() string

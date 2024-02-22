@@ -2,17 +2,17 @@ package main
 
 import (
 	"github.com/aerosystems/adapter-service/internal/config"
+	HttpServer "github.com/aerosystems/adapter-service/internal/http"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 type App struct {
 	log        *logrus.Logger
 	cfg        *config.Config
-	httpServer *http.Server
+	httpServer *HttpServer.Server
 }
 
-func NewApp(log *logrus.Logger, cfg *config.Config, httpServer *http.Server) *App {
+func NewApp(log *logrus.Logger, cfg *config.Config, httpServer *HttpServer.Server) *App {
 	return &App{
 		log:        log,
 		cfg:        cfg,

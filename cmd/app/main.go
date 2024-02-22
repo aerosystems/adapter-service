@@ -1,12 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"github.com/aerosystems/adapter-service/internal/proxy"
-	"github.com/aerosystems/adapter-service/pkg/logger"
-	"os"
-)
-
 const webPort = "80"
 
 // @title Adapter Service API
@@ -28,14 +21,22 @@ const webPort = "80"
 // @schemes https
 // @BasePath /
 func main() {
-	log := logger.NewLogger(os.Getenv("HOSTNAME"))
-	proxyService := proxy.NewService("http://checkmail-service:80")
-	app := NewApp(log.Logger, proxyService)
-
-	e := app.NewRouter()
-
-	err := e.Start(fmt.Sprintf(":%s", webPort))
-	if err != nil {
-		panic(err)
-	}
+	//app := InitApp()
+	//
+	//ctx, cancel := context.WithCancel(context.Background())
+	//defer cancel()
+	//
+	//group, ctx := errgroup.WithContext(ctx)
+	//
+	//group.Go(func() error {
+	//	return app.httpServer.Run()
+	//})
+	//
+	//group.Go(func() error {
+	//	return app.handleSignals(ctx, cancel)
+	//})
+	//
+	//if err := group.Wait(); err != nil {
+	//	app.log.Errorf("error occurred: %v", err)
+	//}
 }

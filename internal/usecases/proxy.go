@@ -1,20 +1,27 @@
-package proxy
+package usecases
 
-type ResponseInspectCheckmail struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
+import "github.com/aerosystems/adapter-service/internal/models"
+
+type ProxyUsecase struct {
+	verifireRepo VerifireRepository
 }
 
-type ResponseCheckData struct {
-	Error   int    `json:"error"`
-	Result  bool   `json:"result"`
-	Unknown *bool  `json:"unknown,omitempty"`
-	Message string `json:"message,omitempty"`
+func NewProxyUsecase(verifireRepo VerifireRepository) *ProxyUsecase {
+	return &ProxyUsecase{
+		verifireRepo: verifireRepo,
+	}
 }
 
-func (s *Service) TransformCheckmailToProxy(responsePayload ResponseInspectCheckmail) (ResponseCheckData, error) {
-	var payload ResponseCheckData
+func (uc *ProxyUsecase) InspectData(data string, token string, clientIp string, serverIp string) (*models.InspectResult, error) {
+	result, err := uc.verifireRepo.InspectData(data, token, clientIp, serverIp)
+	if err != nil {
+		return nil, err
+	}
+	return transformResponse(result), nil
+}
+
+func transformResponse(responsePayload *models.InspectDTO) *models.InspectResult {
+	var payload models.InspectResult
 
 	switch responsePayload.Code {
 	case 400001:
@@ -41,6 +48,5 @@ func (s *Service) TransformCheckmailToProxy(responsePayload ResponseInspectCheck
 			payload.Message = "Unknown domain. We will classify this domain shortly"
 		}
 	}
-
-	return payload, nil
+	return &payload
 }

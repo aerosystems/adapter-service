@@ -2,6 +2,7 @@ package HttpServer
 
 import (
 	"fmt"
+	"github.com/aerosystems/adapter-service/internal/infrastructure/rest"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 )
@@ -9,20 +10,22 @@ import (
 const webPort = 80
 
 type Server struct {
-	log          *logrus.Logger
-	echo         *echo.Echo
-	tokenService TokenService
+	log            *logrus.Logger
+	echo           *echo.Echo
+	inspectHandler *rest.InspectHandler
+	tokenService   TokenService
 }
 
 func NewServer(
 	log *logrus.Logger,
+	inspectHandler *rest.InspectHandler,
 	tokenService TokenService,
-
 ) *Server {
 	return &Server{
-		log:          log,
-		echo:         echo.New(),
-		tokenService: tokenService,
+		log:            log,
+		echo:           echo.New(),
+		inspectHandler: inspectHandler,
+		tokenService:   tokenService,
 	}
 }
 

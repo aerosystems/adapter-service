@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Mode              string `mapstructure:"MODE"`
 	AccessSecretProxy string `mapstructure:"ACCESS_SECRET_PROXY"`
+	VerifireBaseURL   string `mapstructure:"VERIFIRE_BASE_URL"`
 }
 
 func NewConfig() *Config {

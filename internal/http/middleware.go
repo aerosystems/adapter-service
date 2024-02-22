@@ -2,7 +2,6 @@ package HttpServer
 
 import (
 	"errors"
-	"github.com/aerosystems/auth-service/internal/models"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -40,7 +39,7 @@ func (s *Server) addCORS() {
 	s.echo.Use(middleware.CORSWithConfig(DefaultCORSConfig))
 }
 
-func (s *Server) AuthTokenMiddleware(roles ...models.KindRole) echo.MiddlewareFunc {
+func (s *Server) AuthTokenMiddleware() echo.MiddlewareFunc {
 	AuthorizationConfig := echojwt.Config{
 		SigningKey:     []byte(s.tokenService.GetAccessSecret()),
 		ParseTokenFunc: s.parseToken,
@@ -54,14 +53,7 @@ func (s *Server) AuthTokenMiddleware(roles ...models.KindRole) echo.MiddlewareFu
 			if err != nil {
 				return AuthorizationConfig.ErrorHandler(c, err)
 			}
-			accessTokenClaims, err := s.tokenService.DecodeAccessToken(token)
-			if err != nil {
-				return AuthorizationConfig.ErrorHandler(c, err)
-			}
-			if !isAccess(roles, accessTokenClaims.UserRole) {
-				return echo.NewHTTPError(http.StatusForbidden, "access denied")
-			}
-			echo.Context(c).Set("accessTokenClaims", accessTokenClaims)
+			echo.Context(c).Set("accessToken", token)
 			return next(c)
 		}
 	}
@@ -74,15 +66,6 @@ func (s *Server) parseToken(c echo.Context, auth string) (interface{}, error) {
 		return nil, err
 	}
 	return accessTokenClaims, nil
-}
-
-func isAccess(roles []models.KindRole, role string) bool {
-	for _, r := range roles {
-		if r.String() == role {
-			return true
-		}
-	}
-	return false
 }
 
 func getTokenFromHeader(c echo.Context) (string, error) {
