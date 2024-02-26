@@ -1,6 +1,9 @@
 package main
 
-const webPort = "80"
+import (
+	"context"
+	"golang.org/x/sync/errgroup"
+)
 
 // @title Adapter Service API
 // @version 1.0.0
@@ -21,22 +24,22 @@ const webPort = "80"
 // @schemes https
 // @BasePath /
 func main() {
-	//app := InitApp()
-	//
-	//ctx, cancel := context.WithCancel(context.Background())
-	//defer cancel()
-	//
-	//group, ctx := errgroup.WithContext(ctx)
-	//
-	//group.Go(func() error {
-	//	return app.httpServer.Run()
-	//})
-	//
-	//group.Go(func() error {
-	//	return app.handleSignals(ctx, cancel)
-	//})
-	//
-	//if err := group.Wait(); err != nil {
-	//	app.log.Errorf("error occurred: %v", err)
-	//}
+	app := InitApp()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	group, ctx := errgroup.WithContext(ctx)
+
+	group.Go(func() error {
+		return app.httpServer.Run()
+	})
+
+	group.Go(func() error {
+		return app.handleSignals(ctx, cancel)
+	})
+
+	if err := group.Wait(); err != nil {
+		app.log.Errorf("error occurred: %v", err)
+	}
 }
