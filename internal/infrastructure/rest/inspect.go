@@ -27,7 +27,7 @@ type ErrorResponse struct {
 // @Accept  json
 // @Produce application/json
 // @Security BearerAuth
-// @Success 200 {object} ResponseCheckData
+// @Success 200 {object} models.InspectResult
 // @Failure 401 {object} ErrorResponse
 // @Failure 500 {object} ErrorResponse
 // @Router /domain/check [get]

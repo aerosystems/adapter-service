@@ -1,11 +1,6 @@
 basePath: /
 definitions:
-  proxy.ErrorResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  proxy.ResponseCheckData:
+  models.InspectResult:
     properties:
       error:
         type: integer
@@ -16,7 +11,12 @@ definitions:
       unknown:
         type: boolean
     type: object
-host: api.verifire.com
+  rest.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: api.verifire.dev
 info:
   contact:
     name: Artem Kostenko
@@ -40,15 +40,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/proxy.ResponseCheckData'
+            $ref: '#/definitions/models.InspectResult'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/proxy.ErrorResponse'
+            $ref: '#/definitions/rest.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/proxy.ErrorResponse'
+            $ref: '#/definitions/rest.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Get Data about domain/email address

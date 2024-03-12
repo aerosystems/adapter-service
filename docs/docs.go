@@ -44,19 +44,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/proxy.ResponseCheckData"
+                            "$ref": "#/definitions/models.InspectResult"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/proxy.ErrorResponse"
+                            "$ref": "#/definitions/rest.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/proxy.ErrorResponse"
+                            "$ref": "#/definitions/rest.ErrorResponse"
                         }
                     }
                 }
@@ -64,15 +64,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "proxy.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "proxy.ResponseCheckData": {
+        "models.InspectResult": {
             "type": "object",
             "properties": {
                 "error": {
@@ -86,6 +78,14 @@ const docTemplate = `{
                 },
                 "unknown": {
                     "type": "boolean"
+                }
+            }
+        },
+        "rest.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }
