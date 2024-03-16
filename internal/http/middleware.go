@@ -2,6 +2,8 @@ package HttpServer
 
 import (
 	"errors"
+	"github.com/aerosystems/adapter-service/internal/models"
+	"github.com/golang-jwt/jwt"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -41,7 +43,7 @@ func (s *Server) addCORS() {
 
 func (s *Server) AuthTokenMiddleware() echo.MiddlewareFunc {
 	AuthorizationConfig := echojwt.Config{
-		SigningKey:     []byte(s.tokenService.GetAccessSecret()),
+		SigningKey:     []byte(s.accessSecret),
 		ParseTokenFunc: s.parseToken,
 		ErrorHandler: func(c echo.Context, err error) error {
 			return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
@@ -59,9 +61,23 @@ func (s *Server) AuthTokenMiddleware() echo.MiddlewareFunc {
 	}
 }
 
+func (s *Server) DecodeAccessToken(tokenString string) (*models.AccessTokenClaims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &models.AccessTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.accessSecret), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*models.AccessTokenClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, err
+	}
+}
+
 func (s *Server) parseToken(c echo.Context, auth string) (interface{}, error) {
 	_ = c
-	accessTokenClaims, err := s.tokenService.DecodeAccessToken(auth)
+	accessTokenClaims, err := s.DecodeAccessToken(auth)
 	if err != nil {
 		return nil, err
 	}

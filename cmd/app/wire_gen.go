@@ -13,7 +13,6 @@ import (
 	"github.com/aerosystems/adapter-service/internal/repository/verifire"
 	"github.com/aerosystems/adapter-service/internal/usecases"
 	"github.com/aerosystems/adapter-service/pkg/logger"
-	"github.com/aerosystems/adapter-service/pkg/oauth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,8 +26,7 @@ func InitApp() *App {
 	api := ProvideVerifireApi(config)
 	proxyUsecase := ProvideProxyUsecase(api)
 	inspectHandler := ProvideInspectHandler(proxyUsecase)
-	accessTokenService := ProvideAccessTokenService(config)
-	server := ProvideHttpServer(logrusLogger, inspectHandler, accessTokenService)
+	server := ProvideHttpServer(logrusLogger, config, inspectHandler)
 	app := ProvideApp(logrusLogger, config, server)
 	return app
 }
@@ -48,11 +46,6 @@ func ProvideConfig() *config.Config {
 	return configConfig
 }
 
-func ProvideHttpServer(log *logrus.Logger, inspectHandler *rest.InspectHandler, tokenService HttpServer.TokenService) *HttpServer.Server {
-	server := HttpServer.NewServer(log, inspectHandler, tokenService)
-	return server
-}
-
 func ProvideInspectHandler(proxyUsecase rest.ProxyUsecase) *rest.InspectHandler {
 	inspectHandler := rest.NewInspectHandler(proxyUsecase)
 	return inspectHandler
@@ -65,12 +58,12 @@ func ProvideProxyUsecase(checkmailRepo usecases.VerifireRepository) *usecases.Pr
 
 // wire.go:
 
-func ProvideLogrusLogger(log *logger.Logger) *logrus.Logger {
-	return log.Logger
+func ProvideHttpServer(log *logrus.Logger, cfg *config.Config, inspectHandler *rest.InspectHandler) *HttpServer.Server {
+	return HttpServer.NewServer(log, cfg.AccessSecret, inspectHandler)
 }
 
-func ProvideAccessTokenService(cfg *config.Config) *OAuthService.AccessTokenService {
-	return OAuthService.NewAccessTokenService(cfg.AccessSecretProxy)
+func ProvideLogrusLogger(log *logger.Logger) *logrus.Logger {
+	return log.Logger
 }
 
 func ProvideVerifireApi(cfg *config.Config) *verifire.Api {

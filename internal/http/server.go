@@ -12,20 +12,20 @@ const webPort = 80
 type Server struct {
 	log            *logrus.Logger
 	echo           *echo.Echo
+	accessSecret   string
 	inspectHandler *rest.InspectHandler
-	tokenService   TokenService
 }
 
 func NewServer(
 	log *logrus.Logger,
+	accessSecret string,
 	inspectHandler *rest.InspectHandler,
-	tokenService TokenService,
 ) *Server {
 	return &Server{
 		log:            log,
 		echo:           echo.New(),
+		accessSecret:   accessSecret,
 		inspectHandler: inspectHandler,
-		tokenService:   tokenService,
 	}
 }
 
