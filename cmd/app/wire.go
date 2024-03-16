@@ -5,8 +5,8 @@ package main
 
 import (
 	"github.com/aerosystems/adapter-service/internal/config"
-	HttpServer "github.com/aerosystems/adapter-service/internal/http"
-	"github.com/aerosystems/adapter-service/internal/infrastructure/rest"
+	"github.com/aerosystems/adapter-service/internal/infrastructure/http"
+	"github.com/aerosystems/adapter-service/internal/infrastructure/http/handlers"
 	"github.com/aerosystems/adapter-service/internal/repository/verifire"
 	"github.com/aerosystems/adapter-service/internal/usecases"
 	"github.com/aerosystems/adapter-service/pkg/logger"
@@ -17,7 +17,7 @@ import (
 //go:generate wire
 func InitApp() *App {
 	panic(wire.Build(
-		wire.Bind(new(rest.ProxyUsecase), new(*usecases.ProxyUsecase)),
+		wire.Bind(new(handlers.ProxyUsecase), new(*usecases.ProxyUsecase)),
 		wire.Bind(new(usecases.VerifireRepository), new(*verifire.Api)),
 		ProvideApp,
 		ProvideLogger,
@@ -42,7 +42,7 @@ func ProvideConfig() *config.Config {
 	panic(wire.Build(config.NewConfig))
 }
 
-func ProvideHttpServer(log *logrus.Logger, cfg *config.Config, inspectHandler *rest.InspectHandler) *HttpServer.Server {
+func ProvideHttpServer(log *logrus.Logger, cfg *config.Config, inspectHandler *handlers.InspectHandler) *HttpServer.Server {
 	return HttpServer.NewServer(log, cfg.AccessSecret, inspectHandler)
 }
 
@@ -50,8 +50,8 @@ func ProvideLogrusLogger(log *logger.Logger) *logrus.Logger {
 	return log.Logger
 }
 
-func ProvideInspectHandler(proxyUsecase rest.ProxyUsecase) *rest.InspectHandler {
-	panic(wire.Build(rest.NewInspectHandler))
+func ProvideInspectHandler(proxyUsecase handlers.ProxyUsecase) *handlers.InspectHandler {
+	panic(wire.Build(handlers.NewInspectHandler))
 }
 
 func ProvideProxyUsecase(checkmailRepo usecases.VerifireRepository) *usecases.ProxyUsecase {

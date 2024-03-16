@@ -8,8 +8,8 @@ package main
 
 import (
 	"github.com/aerosystems/adapter-service/internal/config"
-	"github.com/aerosystems/adapter-service/internal/http"
-	"github.com/aerosystems/adapter-service/internal/infrastructure/rest"
+	"github.com/aerosystems/adapter-service/internal/infrastructure/http"
+	"github.com/aerosystems/adapter-service/internal/infrastructure/http/handlers"
 	"github.com/aerosystems/adapter-service/internal/repository/verifire"
 	"github.com/aerosystems/adapter-service/internal/usecases"
 	"github.com/aerosystems/adapter-service/pkg/logger"
@@ -46,8 +46,8 @@ func ProvideConfig() *config.Config {
 	return configConfig
 }
 
-func ProvideInspectHandler(proxyUsecase rest.ProxyUsecase) *rest.InspectHandler {
-	inspectHandler := rest.NewInspectHandler(proxyUsecase)
+func ProvideInspectHandler(proxyUsecase handlers.ProxyUsecase) *handlers.InspectHandler {
+	inspectHandler := handlers.NewInspectHandler(proxyUsecase)
 	return inspectHandler
 }
 
@@ -58,7 +58,7 @@ func ProvideProxyUsecase(checkmailRepo usecases.VerifireRepository) *usecases.Pr
 
 // wire.go:
 
-func ProvideHttpServer(log *logrus.Logger, cfg *config.Config, inspectHandler *rest.InspectHandler) *HttpServer.Server {
+func ProvideHttpServer(log *logrus.Logger, cfg *config.Config, inspectHandler *handlers.InspectHandler) *HttpServer.Server {
 	return HttpServer.NewServer(log, cfg.AccessSecret, inspectHandler)
 }
 
